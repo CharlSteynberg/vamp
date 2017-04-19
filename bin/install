@@ -52,7 +52,7 @@
 
    sudo mkdir /opt/vamp
    sudo git clone https://github.com/CharlSteynberg/vamp.git /opt/vamp
-   sudo ln -s /opt/vamp/apps/dmon/init/vamp /usr/bin/vamp
+   sudo ln -s /opt/vamp/bin/vamp /usr/bin/vamp
    sudo chown -R "$inst_cusr" /opt/vamp
    sudo chgrp -R "$inst_cgrp" /opt/vamp
 

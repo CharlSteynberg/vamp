@@ -2,7 +2,7 @@
   "name": "vamp",
   "version": "0.1.0",
   "description": "versatile application meta-programming",
-  "main": "index.js",
+  "main": "abec.api.js",
   "directories": {
     "doc": "docs"
   },
@@ -17,7 +17,7 @@
     "vamp"
   ],
   "author": "CharlSteynberg",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/CharlSteynberg/vamp/issues"
   },
