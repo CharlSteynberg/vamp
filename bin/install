@@ -1,0 +1,65 @@
+#!/bin/sh
+
+   inst_cusr="$(whoami)"
+   read -r inst_cgrp therest <<< "$(groups)"
+
+
+
+   if ! inst_pack="$(type -p zypper)" || [ -z "$inst_pack" ]; then
+      inst_cmnd="zypper in"
+   elif  ! inst_pack="$(type -p apt-get)" || [ -z "$inst_pack" ]; then
+      inst_cmnd="apt-get install"
+   fi
+
+
+
+
+   if ! inst_pack="$(type -p vamp)" || [ -z "$inst_pack" ]; then
+      read -p "vamp is already installed, re-install? (y/n) " -n 1 -r
+      if [[ $REPLY =~ ^[Nn]$ ]]; then
+         echo ""
+         exit
+      fi
+   fi
+
+
+   echo "";
+
+
+   if ! inst_pack="$(type -p node)" || [ -z "$inst_pack" ]; then
+      sudo "$inst_cmnd" nodejs
+   fi
+
+
+
+   if ! inst_pack="$(type -p git)" || [ -z "$inst_pack" ]; then
+      sudo "$inst_cmnd" git
+   fi
+
+
+
+   if [ -d /opt/vamp ] ; then
+      sudo rm -rf /opt/vamp
+   fi
+
+
+
+   if [ -h /usr/bin/vamp ] ; then
+      sudo rm -f /usr/bin/vamp
+   fi
+
+
+
+   sudo mkdir /opt/vamp
+   sudo git clone https://github.com/CharlSteynberg/vamp.git /opt/vamp
+   sudo ln -s /opt/vamp/apps/dmon/init/vamp /usr/bin/vamp
+   sudo chown -R "$inst_cusr" /opt/vamp
+   sudo chgrp -R "$inst_cgrp" /opt/vamp
+
+
+
+   if [ -h /usr/bin/vamp ] ; then
+      echo "Done :: vamp was installed successfully"
+   else
+      echo "Fail :: vamp was not installed correctly"
+   fi

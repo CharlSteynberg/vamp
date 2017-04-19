@@ -1,0 +1,28 @@
+{
+  "name": "vamp",
+  "version": "0.1.0",
+  "description": "versatile application meta-programming",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharlSteynberg/vamp.git"
+  },
+  "keywords": [
+    "vamp"
+  ],
+  "author": "CharlSteynberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CharlSteynberg/vamp/issues"
+  },
+  "homepage": "https://github.com/CharlSteynberg/vamp#readme",
+  "devDependencies": {
+    "electron": "^1.6.6"
+  }
+}
