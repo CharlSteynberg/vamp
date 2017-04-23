@@ -22,20 +22,22 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------
    Object.defineProperty(Main,'Extend',{writable:false,enumerable:false,configurable:false,value:function()
    {
-      var args = arguments;
+      var args = [].slice.call(arguments);
 
-      return (function(defn)
+      return (function(defn,fail)
       {
          if ((typeof defn) != 'object'){ throw 'invalid dataType :: expecting: `Extend(args)({})`'; }
-
          args.forEach(function(ownr)
          {
             for (var prop in defn)
             {
                if (!defn.hasOwnProperty(prop)){ continue; }
-               Object.defineProperty(ownr,prop,{writable:false,enumerable:false,configurable:false,value:defn[prop]});
+               try { Object.defineProperty(ownr,prop,{writable:false,enumerable:false,configurable:false,value:defn[prop]}); }
+               catch(f){fail=true;}
             }
          });
+
+         return (fail ? false : true);
       });
    }});
 // --------------------------------------------------------------------------------------------------------------------------------------------
@@ -80,7 +82,7 @@
 
 
 
-// conf :: (global) : set some important global constants
+// conf :: (global) : important global constants - these are used with some tools defined below to standardise server & client commands
 // --------------------------------------------------------------------------------------------------------------------------------------------
    Define
    ({
@@ -117,29 +119,25 @@
 
 
 
-// func :: typeOf : primary dataType identification - `r` is for raw-type return
+// func :: typeOf : primary data-types - `r` for crude type  ..  `TOOL` is i.e: Math, RegExp, console  ..  `PROC` is like a: worker, timer, XHR
 // --------------------------------------------------------------------------------------------------------------------------------------------
-   Define('typeOf',function(d,r,t)
+   Define('typeOf',function(d,r,p,t,n)
    {
-      t=(Object.prototype.toString.call(d).match(/\s([a-zA-Z]+)/)[1].toLowerCase()); if(r){return r;} t=
-      ((
-         (t=='string') && /[\x00-\x08\x0E-\x1F\x80-\xFF]/.test(d)) ? 'binary' : ((t.indexOf('elem') > -1) ? 'element' :
-         ((t.indexOf('coll') > -1) ? 'nodelist' : (((type=='global')||(type=='window')) ? 'supreme' :
-         (t.indexOf('elem') ? 'ob' : ((t.indexOf('list')||(t=='arguments')) ? 'ar' : (t=='null' ? 'bo' : t)))))
-      ));
+      p=(Object.prototype.toString.call(d).match(/\s([a-zA-Z]+)/)[1].toLowerCase());  n=((!!d&&!!d.constructor)?d.constructor.name:n);
+      p=(!n ? p : ((n.substr(1,3)=='ime') ? n.toLowerCase() : p));  if(r){return p};  p=p[0];  n=((n=='Object')&&((typeof d.log)!='function'));
+      t=(typeof d)[0];  t=((!d&&(t!='b'))?0:((t=='b')?1:((t=='n')?2:((t=='s')?3:((t=='f') ? 4 : ((t!='o') ? 0 :
+       ((p=='a')?5:((p=='t')||(p=='g')||(p=='w')||(!n&&(!!d.send)||(!!d.platform)))?6:(!n&&(((!!d.test||!!d.assert||!!d.debug||!!d.log)))?7:8))
+      ))))));
 
-      return (this[t.substr(0,2)] || this['un']);
+      return this[t];
    }
-   .bind(function(d,n,w,f)
+   .bind(function(d,f)
    {
-      d = 'VOID,BOOL,NUMR,TEXT,LIST,FORM,FUNC'.split(',');  // ,FAIL,CRON,DUCT,SNSR,PROC :: TODO
-
-      for (n in d)
+      d={};  ('VOID,BOOL,NUMR,TEXT,FUNC,LIST,PROC,TOOL,FORM'.split(',')).forEach(function(n,i)
       {
-         if (!d.hasOwnProperty(n) || Main.hasOwnProperty(d[n])){ continue; }
-         w=d[n];  f=('is'+w[0]+w.substr(1).toLowerCase());  d[n]=Define(w);
-         Define(f,function(v){return (typeOf(v)==this[t]);}.bind({t:d[n]}));
-      }
+         f=('is'+n[0]+n.substr(1).toLowerCase());  d[i]=Define(n);
+         Define(f,function(v){return (typeOf(v)==this.t)}.bind({t:d[i]}));
+      });
 
       return d;
    }()));
@@ -148,7 +146,7 @@
 
 
 
-
+/*
 // func :: kindOf : secondary dataType identification
 // --------------------------------------------------------------------------------------------------------------------------------------------
    Define('kindOf',function(d,r,t,k)
@@ -171,3 +169,4 @@
       MAIN:function(d,r){}.bind({}),
    }));
 // --------------------------------------------------------------------------------------------------------------------------------------------
+*/
