@@ -6,7 +6,7 @@
 
 
 
-// conf :: (initial) : strict-mode (bug prevention)   ..  `Main` (immutable supreme-global)
+// conf :: (initial) : strict-mode (bug prevention)  ..  `Main` (immutable supreme-global)
 // --------------------------------------------------------------------------------------------------------------------------------------------
    "use strict";
 
@@ -133,7 +133,7 @@
    }
    .bind(function(d,f)
    {
-      d={};  ('VOID,BOOL,NUMR,TEXT,FUNC,LIST,PROC,TOOL,FORM'.split(',')).forEach(function(n,i)
+      d={};  ('VOID BOOL NUMR TEXT FUNC LIST PROC TOOL FORM'.split(' ')).forEach(function(n,i)
       {
          f=('is'+n[0]+n.substr(1).toLowerCase());  d[i]=Define(n);
          Define(f,function(v){return (typeOf(v)==this.t)}.bind({t:d[i]}));
@@ -146,27 +146,54 @@
 
 
 
-/*
-// func :: kindOf : secondary dataType identification
+
+// func :: kindOf : secondary dataType identification  ..  `TOSHTEXT` is all-white-space  ..  `TOOLFUNC` is function-of-function/proto/global
 // --------------------------------------------------------------------------------------------------------------------------------------------
-   Define('kindOf',function(d,r,t,k)
+   Define('kindOf',function(d,r,t)
    {
-      r=typeOf(d,1);  t=typeOf(d).substr(1,4);  k=this[t](d,r);
-      return Main[(k+t)];
+      r=typeOf(d,1);  t=typeOf(d).substr(1,4);
+      return this[t](d,r);
    }
-   .bind
-   ({
-      VOID:function(d,r){}.bind({BARE:1}),
-      SPIN:function(d,r){}.bind({VOID:1}),
-      NUME:function(d,r){}.bind({}),
-      TEXT:function(d,r){}.bind({}),
-      BLOB:function(d,r){}.bind({}),
-      LIST:function(d,r){}.bind({}),
-      FORM:function(d,r){}.bind({}),
-      FUNC:function(d,r){}.bind({}),
-      TIME:function(d,r){}.bind({}),
-      EXPR:function(d,r){}.bind({}),
-      MAIN:function(d,r){}.bind({}),
-   }));
+   .bind(function(d,t,g,f)
+   {
+      d={};
+      ([
+         ['VOID','NONE',function(d,r){return this[0]}],
+         ['BOOL','TRUE FALS',function(d,r){return this[(d?0:1)]}],
+         ['NUMR','VOID DGIT FRAC',function(d,r){return this[(!d?0:(((d+'').indexOf('.')<0)?1:2))]}],
+
+         ['TEXT','VOID TOSH NUMR CHAR WORD SLUG BOOL WRAP EMOG PATH MAIL PASS EXPR FUNC MESG BLOG DATA',function(d,r,e)
+         {
+            if(!d){return this[0]};  if(!d.trim()){return this[1]};  if(!isNaN((d))){return this[2]};  if(d.length<2){return this[3]};
+            if((/^[a-zA-Z0-9]{2,36}+$/).test(d)){return this[4]};  if((/^[a-zA-Z0-9_-]{3,256}+$/).test(d)){return this[5]};
+            if('true fals false yes no on off'.split(' ').indexOf(d.toLowerCase())>-1){return this[6]};
+            if(['""',"''",'``','()','[]','{}','<>','⋖⋗'].indexOf((d[0]+d.slice(-1)))>-1){return this[7]};
+            if((d.length<4) && (d.length>1))
+            {
+               e=":) ;) :P :D :| :/ :O :( ;( :'( :-) ;-) :-P :-D :-| :-/ :-O :-( ;-( 8) \\O O/ \\O/ :*".split(' ');
+               if(e.indexOf(d.toUpperCase())>-1){return this[8]}
+            }
+            if(d.match(/^[a-zA-Z0-9-\/\.⁄_]{1,256}+$/)){return this[9]};
+            if(d.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/)){return this[10]};
+            if(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{6,12}/.test(d)){return this[11]};
+            if(d.match(/^\/[\s\S]+\/$/)){return this[12]};
+            if(d.trim().split('\n').join('').split(' ').join('').split('function(').length>1){return this[13]};
+            if((d.length>2)&&((d.indexOf('\n')>-1)||(d.indexOf(' ')>-1))&&(/^(?=.*[a-z])/.test(d))){ return this[((d.length<=60)?14:15)]};
+            return this[16];
+         }],
+
+         ['FUNC','VOID METH TOOL NODE',function(d,r){}],
+
+         ['LIST','VOID VECT TEXT FORM NODE TASK MIXD',function(d,r){}],
+
+         ['FORM','VOID PLOT DATA TOOL NODE FAIL',function(d,r){}],
+
+         ['TOOL','VOID MATH TEXT DEVL',function(d,r){}],
+
+         ['PROC','CRON BIOS MAIN MULE',function(d,r){}],
+      ])
+      .forEach(function(l){ var o={};  l[1].split(' ').forEach(function(w,i){o[i]=Define(w)});  d[l[0]]=l[2].bind(o); });
+
+      return d;
+   }()));
 // --------------------------------------------------------------------------------------------------------------------------------------------
-*/

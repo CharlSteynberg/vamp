@@ -2,7 +2,7 @@
   "name": "vamp",
   "version": "0.1.0",
   "description": "versatile application meta-programming",
-  "main": "abec.api.js",
+  "main": "init.js",
   "directories": {
     "doc": "docs"
   },
