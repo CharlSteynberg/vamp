@@ -82,7 +82,7 @@
 
 
 
-// conf :: (global) : important global constants - these are used with some tools defined below to standardise server & client commands
+// conf :: (global) : important globals - these are used with some tools defined below to standardise server & client commands
 // --------------------------------------------------------------------------------------------------------------------------------------------
    Define
    ({
@@ -92,7 +92,9 @@
       FALS:false,
    });
 
+
    Define('AUTO,DROP,DUPL,HASH,UPPR,LOWR,CAML,LABL,NEXT,SKIP,STOP,DONE,KEYS,VALS,ONCE,BFOR,AFTR,EVRY,UNTL,EVNT,EVEN,ODDS,PULL,PUSH,FAIL,EXIT');
+
 
    Define(function()
    {
@@ -113,6 +115,22 @@
 
       return resl;
    }());
+
+
+   Define
+   ({
+      RunLib:
+      {
+         TEXT:
+         {
+            emogi:":) ;) :P :D :| :/ :O :( ;( :'( :-) ;-) :-P :-D :-| :-/ :-O :-( ;-( 8) \\O O/ \\O/ :*".split(' '),
+         }
+      }
+   });
+
+
+   Math.name = 'Math';
+   if(PUBLIC){Main.process=navigator;}
 // --------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -125,7 +143,7 @@
    {
       p=(Object.prototype.toString.call(d).match(/\s([a-zA-Z]+)/)[1].toLowerCase());  n=((!!d&&!!d.constructor)?d.constructor.name:n);
       p=(!n ? p : ((n.substr(1,3)=='ime') ? n.toLowerCase() : p));  if(r){return p};  p=p[0];  n=((n=='Object')&&((typeof d.log)!='function'));
-      t=(typeof d)[0];  t=((!d&&(t!='b'))?0:((t=='b')?1:((t=='n')?2:((t=='s')?3:((t=='f') ? 4 : ((t!='o') ? 0 :
+      t=(typeof d)[0];  t=((d===VOID)||(d===null))?0:((t=='b')?1:((t=='n')?2:((t=='s')?3:((t=='f') ? 4 : ((t!='o') ? 0 :
        ((p=='a')?5:((p=='t')||(p=='g')||(p=='w')||(!n&&(!!d.send)||(!!d.platform)))?6:(!n&&(((!!d.test||!!d.assert||!!d.debug||!!d.log)))?7:8))
       ))))));
 
@@ -147,7 +165,7 @@
 
 
 
-// func :: kindOf : secondary dataType identification  ..  `TOSHTEXT` is all-white-space  ..  `TOOLFUNC` is function-of-function/proto/global
+// func :: kindOf : secondary dataType identification  ..  `TOSHTEXT` is all-white-space
 // --------------------------------------------------------------------------------------------------------------------------------------------
    Define('kindOf',function(d,r,t)
    {
@@ -162,35 +180,57 @@
          ['BOOL','TRUE FALS',function(d,r){return this[(d?0:1)]}],
          ['NUMR','VOID DGIT FRAC',function(d,r){return this[(!d?0:(((d+'').indexOf('.')<0)?1:2))]}],
 
-         ['TEXT','VOID TOSH NUMR CHAR WORD SLUG BOOL WRAP EMOG PATH MAIL PASS EXPR FUNC MESG BLOG DATA',function(d,r,e)
+         ['TEXT','VOID TOSH NUMR CHAR NICK SLUG BOOL WRAP EMOG PATH MAIL PASS EXPR FUNC MESG BLOG SOME',function(d,r,e)
          {
             if(!d){return this[0]};  if(!d.trim()){return this[1]};  if(!isNaN((d))){return this[2]};  if(d.length<2){return this[3]};
-            if((/^[a-zA-Z0-9]{2,36}+$/).test(d)){return this[4]};  if((/^[a-zA-Z0-9_-]{3,256}+$/).test(d)){return this[5]};
+            if((/^[a-zA-Z0-9_]{2,36}+$/).test(d)){return this[4]};  if((/^[a-zA-Z0-9_-]{3,256}+$/).test(d)){return this[5]};
             if('true fals false yes no on off'.split(' ').indexOf(d.toLowerCase())>-1){return this[6]};
             if(['""',"''",'``','()','[]','{}','<>','⋖⋗'].indexOf((d[0]+d.slice(-1)))>-1){return this[7]};
-            if((d.length<4) && (d.length>1))
-            {
-               e=":) ;) :P :D :| :/ :O :( ;( :'( :-) ;-) :-P :-D :-| :-/ :-O :-( ;-( 8) \\O O/ \\O/ :*".split(' ');
-               if(e.indexOf(d.toUpperCase())>-1){return this[8]}
-            }
+            if((d.length<4) && (d.length>1) && (RunLib.TEXT.emogi.indexOf(d.toUpperCase())>-1)){return this[8]}
             if(d.match(/^[a-zA-Z0-9-\/\.⁄_]{1,256}+$/)){return this[9]};
             if(d.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/)){return this[10]};
             if(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{6,12}/.test(d)){return this[11]};
             if(d.match(/^\/[\s\S]+\/$/)){return this[12]};
             if(d.trim().split('\n').join('').split(' ').join('').split('function(').length>1){return this[13]};
-            if((d.length>2)&&((d.indexOf('\n')>-1)||(d.indexOf(' ')>-1))&&(/^(?=.*[a-z])/.test(d))){ return this[((d.length<=60)?14:15)]};
+            if((d.length>5)&&((d.indexOf('\n')>-1)||(d.indexOf(' ')>-1))&&(/^(?=.*[a-z])/.test(d))){ return this[((d.length<=60)?14:15)]};
             return this[16];
          }],
 
-         ['FUNC','VOID METH TOOL NODE',function(d,r){}],
+         ['FUNC','VOID TOOL BOND DATA SOME',function(d,r)
+         {
+            d=d.trim().split('\n').join('').split(' ').join('').split('){')[1].split('}')[0].trim();  if(d.length<1){return this[0]};
+            if(d.indexOf('[nativecode]')>-1){return this[1]};  return this[2];
+         }],
 
-         ['LIST','VOID VECT TEXT FORM NODE TASK MIXD',function(d,r){}],
+         ['LIST','VOID ARGS NODE VECT TEXT DATA FUNC DEEP SOME',function(d,r)
+         {
+            if(d.length<1){retun this[0]}; if(r.indexOf('coll')>-1){retun this[1]}; // TODO <-- here: arguments nodelist
+            var ve=1,te=1,da=1,fu=1,pk=VOID,pv;  d.forEach(function(ck,cv)
+            {
+               if(!isNumr(ck)||!isNumr(cv)){ve=0};  if(!isText(cv)){te=0};  if(!isForm(cv)){da=0};  if(!isFunc(cv)){fu=0};  if(!ve){return};
+               if(pk===VOID){pk=ck;pv=cv;return};  if(((pk+1)!=ck)||(cv<=pv)){ve=0;return};  pk=ck; pv=cv;
+            });
+            return this[(ve?3:(te?4:(da?5:(fu?6:7))))];
+         }],
 
-         ['FORM','VOID PLOT DATA TOOL NODE FAIL',function(d,r){}],
+         ['FORM','VOID NODE EVNT FAIL DATA TOOL DEEP SOME',function(d,r)
+         {
+            if(Object.keys(d).length<1){return this[0]};  if(r.indexOf('elem')>-1){return this[1]};  if(r.indexOf('even')>-1){return this[2]};
+            if(r.indexOf('erro')>-1){return this[3]};  var da=1,to=1,de=0;  for(var i in d){if(!d.hasOwnProperty(i)){continue};
+            if(!(/^[a-zA-Z0-9_]{2,36}+$/).test(i)||(!isVoid(d[i])&&!isBool(d[i])&&!isNumr(d[i])&&!isText(d[i]))){da=0};
+            if(!isFunc(d[i])){to=0};  if(isList(d[i])||isForm(d[i])){de=1};}
+            return this[(da?4:(to?5:(de?6:7)))];
+         }],
 
-         ['TOOL','VOID MATH TEXT DEVL',function(d,r){}],
+         ['TOOL','SOME TEXT MATH NUMR LIST VIEW FORM FUNC DUCT PROC DEVL',function(d,r,n)
+         {
+            n=d.name;  if(!n){return this[0]};  if((String.name==n)||(String.prototype[n])){return this[1]};
+         }],
 
-         ['PROC','CRON BIOS MAIN MULE',function(d,r){}],
+         ['PROC','CRON BIOS MAIN MULE',function(d,r)
+         {
+
+         }],
       ])
       .forEach(function(l){ var o={};  l[1].split(' ').forEach(function(w,i){o[i]=Define(w)});  d[l[0]]=l[2].bind(o); });
 
